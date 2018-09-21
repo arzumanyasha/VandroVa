@@ -1,7 +1,6 @@
 package com.example.user.vandrova.model;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "REVIEWS")
@@ -16,7 +15,7 @@ public class Review {
 
     private String name;
 
-    private String review;
+    private String reviewText;
 
     private Integer rating;
 
@@ -52,12 +51,12 @@ public class Review {
         this.name = name;
     }
 
-    public String getReview() {
-        return review;
+    public String getReviewText() {
+        return reviewText;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setReviewText(String reviewText) {
+        this.reviewText = reviewText;
     }
 
     public Integer getRating() {
