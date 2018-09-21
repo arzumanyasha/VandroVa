@@ -15,6 +15,8 @@ public class Review {
 
     private String review;
 
+    private Integer rating;
+
     private Double lat;
 
     private Double lon;
@@ -49,6 +51,14 @@ public class Review {
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     public Double getLat() {
