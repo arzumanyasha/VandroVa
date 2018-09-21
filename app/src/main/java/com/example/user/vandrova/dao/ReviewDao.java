@@ -12,14 +12,26 @@ import java.util.List;
 @Dao
 public interface ReviewDao {
 
-    @Query("SELECT * FROM REVIEW")
+    @Query("SELECT * FROM REVIEWS")
     List<Review> getAll();
 
-    @Query("SELECT * FROM REVIEW WHERE id = :id")
+    @Query("SELECT * FROM REVIEWS WHERE id = :id")
     Review getById(Integer id);
 
-    @Query("SELECT * FROM REVIEW WHERE email = :email")
+    @Query("SELECT * FROM REVIEWS WHERE email = :email")
     Review getByEmail(String email);
+
+    @Query("SELECT * FROM REVIEWS WHERE placeId = :placeId")
+    List<Review> getByPlaceId(String placeId);
+
+    @Query("SELECT COUNT(*) FROM REVIEWS WHERE placeId = :placeId")
+    Integer getCountByPlaceId(String placeId);
+
+    @Query("SELECT SUM(RATING) FROM REVIEWS WHERE placeId = :placeId")
+    Integer getSumRatingByPlaceId(String placeId);
+
+    @Query("SELECT SUM(RATING)/COUNT(RATING) FROM REVIEWS WHERE placeId = :placeId")
+    Double getRatingByPlaceId(String placeId);
 
     @Insert
     void insertAll(Review... reviews);
@@ -27,6 +39,6 @@ public interface ReviewDao {
     @Delete
     void delete(Review review);
 
-    @Query("DELETE FROM REVIEW")
+    @Query("DELETE FROM REVIEWS")
     void deleteAll();
 }

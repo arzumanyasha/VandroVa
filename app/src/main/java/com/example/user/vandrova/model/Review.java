@@ -1,13 +1,16 @@
 package com.example.user.vandrova.model;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "REVIEWS")
 public class Review {
 
     @PrimaryKey(autoGenerate = true)
     private Integer id;
+
+    private String placeId;
 
     private String email;
 
@@ -17,16 +20,20 @@ public class Review {
 
     private Integer rating;
 
-    private Double lat;
-
-    private Double lon;
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
     public String getEmail() {
@@ -61,19 +68,4 @@ public class Review {
         this.rating = rating;
     }
 
-    public Double getLat() {
-        return lat;
-    }
-
-    public void setLat(Double lat) {
-        this.lat = lat;
-    }
-
-    public Double getLon() {
-        return lon;
-    }
-
-    public void setLon(Double lon) {
-        this.lon = lon;
-    }
 }
