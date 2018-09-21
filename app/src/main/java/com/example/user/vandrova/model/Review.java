@@ -19,6 +19,14 @@ public class Review {
 
     private Integer rating;
 
+    public Review(String placeId, String email, String name, String reviewText, Integer rating) {
+        this.placeId = placeId;
+        this.email = email;
+        this.name = name;
+        this.reviewText = reviewText;
+        this.rating = rating;
+    }
+
     public Integer getId() {
         return id;
     }
