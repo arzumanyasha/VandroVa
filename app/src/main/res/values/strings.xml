@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">VandroVa</string>
     <string name="google_maps_key">AIzaSyBBIbdXmPUNQobPh7nCRSmAVLr4UheQ1po</string>
+    <string name="permission_location_rationale">Интерполу нужен доступ к вашему местоположению</string>
+    <string name="button_allow">Разрешить</string>
+    <string name="button_deny">Не сейчас</string>
+    <string name="permission_location_denied">Местоположение необходимо, чтобы мы смогли показать интересные места рядом с вами</string>
+    <string name="permission_location_neverask">Вы сможете включить доступ к местоположению в настройках своего телефона</string>
+
 </resources>
