@@ -20,6 +20,7 @@ public class PlaceAPIFactory {
 
     private final Retrofit.Builder builder = new Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(new EnvelopingConverter())
             .addConverterFactory(GsonConverterFactory.create());
 
     private final Interceptor apiKeyInterceptor = new Interceptor() {

@@ -1,6 +1,5 @@
 package com.example.user.vandrova;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,9 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.user.vandrova.networking.Venue;
 import com.example.user.vandrova.networking.PlaceAPIFactory;
+import com.example.user.vandrova.networking.VenuesResponse;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.JsonObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,30 +21,44 @@ import retrofit2.Response;
 
 public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
 
+    String placeId = "";
+    String placeName = "";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+
         LatLng latLng = getArguments().getParcelable(Constants.LAT_LNG);
         String lat = String.valueOf(latLng.latitude);
         String lng = String.valueOf(latLng.longitude);
 //        Call<JsonObject> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace(lat + "," + lng);
-        Call<JsonObject> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace("53.9045,27.5615");
-        resp.enqueue(new Callback<JsonObject>() {
+        Call<VenuesResponse> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace("53.9045,27.5615");
+        resp.enqueue(new Callback<VenuesResponse>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                JsonObject jsonObject = response.body();
-                Log.i("", jsonObject.toString());
+            public void onResponse(Call<VenuesResponse> call, Response<VenuesResponse> response) {
+
+                VenuesResponse venuesResponse = response.body();
+                if (null != venuesResponse.getGroups() && !venuesResponse.getGroups().isEmpty()) {
+
+                    if (null != venuesResponse.getGroups().get(0).getItems() && !venuesResponse.getGroups().get(0).getItems().isEmpty()) {
+                        Venue venue = venuesResponse.getGroups().get(0).getItems().get(0).getVenue();
+                        if (null != venue) {
+                            placeId = venue.getId();
+                            placeName = venue.getName();
+                        }
+                    }
+                }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+            public void onFailure(Call<VenuesResponse> call, Throwable t) {
                 Log.e("", t.getMessage());
 
             }
         });
 
-        final String placeId = "";
-        final String placeName = "ilrhjv e;srojggirjg";
+
 
         View v = inflater.inflate(R.layout.bottom_sheet_layout, container, false);
 
