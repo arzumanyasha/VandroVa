@@ -20,6 +20,6 @@ public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
     public void bindViewHolder(Review review) {
         reviewText.setText(review.getReviewText());
-        rating.setText(review.getRating());
+        rating.setText(review.getRating().toString());
     }
 }
