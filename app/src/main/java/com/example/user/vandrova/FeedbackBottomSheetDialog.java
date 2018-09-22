@@ -27,8 +27,8 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
         LatLng latLng = getArguments().getParcelable(Constants.LAT_LNG);
         String lat = String.valueOf(latLng.latitude);
         String lng = String.valueOf(latLng.longitude);
-//        Call<JsonObject> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace(lat + "," + lng);
-        Call<JsonObject> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace("53.9045,27.5615");
+        Call<JsonObject> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace(lat + "," + lng);
+        //Call<JsonObject> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace("53.9045,27.5615");
         resp.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
