@@ -26,7 +26,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".FeedbackScreenActivity">
+
         </activity>
+        <activity android:name=".ReviewsActivity"></activity>
     </application>
 
 </manifest>
