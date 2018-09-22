@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.user.vandrova.networking.Venue;
 import com.example.user.vandrova.networking.PlaceAPIFactory;
@@ -23,17 +24,17 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
 
     String placeId = "";
     String placeName = "";
+    TextView placeTextView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
         LatLng latLng = getArguments().getParcelable(Constants.LAT_LNG);
         String lat = String.valueOf(latLng.latitude);
         String lng = String.valueOf(latLng.longitude);
-//        Call<JsonObject> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace(lat + "," + lng);
-        Call<VenuesResponse> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace("53.9045,27.5615");
+        Call<VenuesResponse> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace(lat + "," + lng);
+        //Call<VenuesResponse> resp = new PlaceAPIFactory().placeAPI.getFoursquarePlace("53.9045,27.5615");
         resp.enqueue(new Callback<VenuesResponse>() {
             @Override
             public void onResponse(Call<VenuesResponse> call, Response<VenuesResponse> response) {
@@ -46,6 +47,7 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
                         if (null != venue) {
                             placeId = venue.getId();
                             placeName = venue.getName();
+                            setTVName(placeName);
                         }
                     }
                 }
@@ -62,8 +64,10 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
 
         View v = inflater.inflate(R.layout.bottom_sheet_layout, container, false);
 
+
         Button leaveFeedback;
         Button viewFeedbacks;
+        placeTextView = v.findViewById(R.id.placeNameTV);
         leaveFeedback = v.findViewById(R.id.feedbackBtn);
         viewFeedbacks = v.findViewById(R.id.ratingListBtn);
         leaveFeedback.setOnClickListener(new View.OnClickListener() {
@@ -81,5 +85,10 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
         });
         return v;
     }
+
+    private void setTVName(String placeName) {
+        placeTextView.setText("You near " + placeName);
+    }
+
 
 }

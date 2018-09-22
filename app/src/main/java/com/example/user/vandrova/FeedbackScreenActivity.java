@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.user.vandrova.dao.AppDatabase;
 import com.example.user.vandrova.model.Review;
@@ -40,6 +41,9 @@ public class FeedbackScreenActivity extends AppCompatActivity {
 
         rating = findViewById(R.id.ratingBar);
         placeNameTextView = findViewById(R.id.placeNameTextView);
+
+        placeNameTextView.setText(placeName);
+
         placeImageView = findViewById(R.id.placeImage);
         feedbackEditText = findViewById(R.id.feedbackEditText);
         emailEditText = findViewById(R.id.emailEditText);
@@ -52,8 +56,11 @@ public class FeedbackScreenActivity extends AppCompatActivity {
                     Review review = new Review(placeId, emailEditText.getText().toString(), nameEditText.getText().toString(), feedbackEditText.getText().toString(), (int) rating.getRating());
                     AppDatabase.getAppDatabase(FeedbackScreenActivity.this).reviewDao().insertAll(review);
                     Intent newIntent = new Intent(FeedbackScreenActivity.this, MainActivity.class);
+                    Toast.makeText(FeedbackScreenActivity.this, "Thank you for feedback!", Toast.LENGTH_SHORT).show();
                     startActivity(newIntent);
                 }
+                else
+                    Toast.makeText(FeedbackScreenActivity.this, "Please type the data ", Toast.LENGTH_SHORT).show();
             }
         });
 
