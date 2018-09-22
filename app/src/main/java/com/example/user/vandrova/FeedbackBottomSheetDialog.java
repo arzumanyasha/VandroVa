@@ -10,12 +10,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
     private BottomSheetListener sheetListener;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        LatLng latLng = getArguments().getParcelable(Constants.LAT_LNG);
+
+        final String placeId = "";
+        final String placeName = "ilrhjv e;srojggirjg";
+
         View v = inflater.inflate(R.layout.bottom_sheet_layout, container, false);
 
         Button leaveFeedback;
@@ -25,16 +32,14 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
         leaveFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sheetListener.onButtonClicked(1);
-                dismiss();
+                FeedbackScreenActivity.show(getActivity(), placeId, placeName);
             }
         });
 
         viewFeedbacks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sheetListener.onButtonClicked(2);
-                dismiss();
+                ReviewsActivity.show(getActivity(), placeId, placeName);
             }
         });
         return v;

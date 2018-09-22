@@ -17,13 +17,10 @@ import java.util.List;
 
 public class ReviewsActivity extends AppCompatActivity {
 
-    private static final String PLACE_ID = "placeId";
-    private static final String PLACE_NAME = "placeName";
-
     public static void show(Context context, String placeId, String placeName) {
         Intent intent = new Intent(context, ReviewsActivity.class);
-        intent.putExtra(PLACE_ID, placeId);
-        intent.putExtra(PLACE_NAME, placeName);
+        intent.putExtra(Constants.PLACE_ID, placeId);
+        intent.putExtra(Constants.PLACE_NAME, placeName);
         context.startActivity(intent);
     }
     @Override
@@ -33,10 +30,10 @@ public class ReviewsActivity extends AppCompatActivity {
 
 
         TextView placeNameTv = findViewById(R.id.tv_place_name);
-        placeNameTv.setText(getIntent().getStringExtra(PLACE_NAME));
+        placeNameTv.setText(getIntent().getStringExtra(Constants.PLACE_NAME));
 
         AppDatabase db = AppDatabase.getAppDatabase(this);
-        List<Review> reviewList = db.reviewDao().getByPlaceId(getIntent().getStringExtra(PLACE_ID));
+        List<Review> reviewList = db.reviewDao().getByPlaceId(getIntent().getStringExtra(Constants.PLACE_ID));
 
 
 

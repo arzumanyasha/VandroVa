@@ -2,8 +2,10 @@ package com.example.user.vandrova;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,8 +18,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
@@ -29,6 +34,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -46,7 +52,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingsRequest;
     private GoogleApiClient mGoogleApiClient;
-
+    FusedLocationProviderClient mCurrentLocation;
+    private boolean PermissionOK = false;
 
 
     @Override
@@ -55,12 +62,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_main);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);
+        mCurrentLocation = LocationServices.getFusedLocationProviderClient(this);
         buildGoogleApiClient();
-        MainActivityPermissionsDispatcher.getPositionWithCheck(MainActivity.this);
+        createLocationRequest();
+        buildLocationSettingsRequest();
 
 
     }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -70,8 +81,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @NeedsPermission(Manifest.permission.ACCESS_FINE_LOCATION)
     void getPosition() {
+        Log.e(TAG, "Есть разрешение");
         startLocationUpdates();
-        createLocationRequest();
+
 
 
     }
@@ -113,30 +125,54 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e(TAG, "onResume mRequestingLocationUpdates");
+        // Within {@code onPause()}, we pause location updates, but leave the
+        // connection to GoogleApiClient intact.  Here, we resume receiving
+        // location updates if the user has requested them.
+
+
+            MainActivityPermissionsDispatcher.getPositionWithCheck(MainActivity.this);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.e(TAG, "onStart");
+        mGoogleApiClient.connect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Log.e(TAG, "onStop");
+        /*if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }*/
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                FeedbackBottomSheetDialog dialog = new FeedbackBottomSheetDialog();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Constants.LAT_LNG, latLng);
+                dialog.setArguments(bundle);
+                dialog.show(getSupportFragmentManager(), FeedbackBottomSheetDialog.class.getSimpleName());
+            }
+        });
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
+
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10);                                    //Этот метод устанавливает скорость в миллисекундах, в течение которых ваше приложение предпочитает получать обновления местоположения
-        mLocationRequest.setFastestInterval(10);                              //Этот метод устанавливает самую высокую скорость в миллисекундах, в течение которых ваше приложение может обрабатывать обновления местоположения.
+        mLocationRequest.setInterval(10000);                                    //Этот метод устанавливает скорость в миллисекундах, в течение которых ваше приложение предпочитает получать обновления местоположения
+        mLocationRequest.setFastestInterval(5000);                              //Этот метод устанавливает самую высокую скорость в миллисекундах, в течение которых ваше приложение может обрабатывать обновления местоположения.
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -170,16 +206,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         // Всё хорошо, настройки пользователя совпадают с требуемыми
                         Log.i(TAG, "All location settings are satisfied.");
                         try {
-                            LocationServices.FusedLocationApi.requestLocationUpdates(
-                                    mGoogleApiClient, mLocationRequest, MainActivity.this);
-                            //создать поток для опред мест пололожения
-                            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                            if (mCurrentLocation != null && mGoogleApiClient.isConnected()) {
-                                Log.e(TAG, "Входим в установку камеры по координатам");
-                                //LatLng startLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                                mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())));
-                                mMap.animateCamera(CameraUpdateFactory.zoomTo(17), 1000, null);
-                            }
+                            mCurrentLocation.getLastLocation()
+                                    .addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
+                                        @Override
+                                        public void onSuccess(Location location) {
+                                            // Got last known location. In some rare situations, this can be null.
+                                            if (location != null) {
+                                                toMoveCamera(location);
+                                            }
+                                        }
+                                    });
+
                         } catch (SecurityException e) {
                             Log.e(TAG, "Ошибка доступа, разрешения нет.");
                         }
@@ -206,7 +243,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 "fixed here. Fix in Settings.";
                         Log.e(TAG, errorMessage);
                         Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                       // mRequestingLocationUpdates = false;
+                        // mRequestingLocationUpdates = false;
 
                         break;
                 }
@@ -214,23 +251,33 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    public void toMoveCamera(Location location) {
+        Log.e(TAG, String.valueOf(location.getLatitude()));
+        Log.e(TAG, String.valueOf(location.getLongitude()));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(17), 1000, null);
+    }
+
     @Override
     public void onLocationChanged(Location location) {
-
+        toMoveCamera(location);
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        //MainActivityPermissionsDispatcher.getPositionWithCheck(MainActivity.this);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        if(!mGoogleApiClient.isConnected())
+        mGoogleApiClient.connect();
+        Log.i(TAG, "onConnectionSuspended");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
     }
+
 }
