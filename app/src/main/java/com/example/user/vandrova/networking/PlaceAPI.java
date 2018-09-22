@@ -11,5 +11,5 @@ public interface PlaceAPI {
     Call<JsonObject> getPlace(@Query("location") String location, @Query("key") String key);
 
     @GET("venues/explore")
-    Call<JsonObject> getFoursquarePlace(@Query("ll") String location);
+    Call<VenuesResponse> getFoursquarePlace(@Query("ll") String location);
 }

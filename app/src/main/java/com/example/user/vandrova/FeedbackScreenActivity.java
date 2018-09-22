@@ -49,7 +49,7 @@ public class FeedbackScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(feedbackEditText.getText()!=null && emailEditText.getText()!=null && nameEditText.getText()!=null && rating.getRating()!=0.0){
-                    Review review = new Review(placeId, emailEditText.getText().toString(), nameEditText.getText().toString(), feedbackEditText.getText().toString(), rating.getNumStars());
+                    Review review = new Review(placeId, emailEditText.getText().toString(), nameEditText.getText().toString(), feedbackEditText.getText().toString(), (int) rating.getRating());
                     AppDatabase.getAppDatabase(FeedbackScreenActivity.this).reviewDao().insertAll(review);
                     Intent newIntent = new Intent(FeedbackScreenActivity.this, MainActivity.class);
                     startActivity(newIntent);
