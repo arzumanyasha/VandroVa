@@ -23,7 +23,7 @@ public class FeedbackScreenActivity extends AppCompatActivity {
     RatingBar rating;
 
     public static void show(Context context, String placeId, String placeName) {
-        Intent intent = new Intent(context, ReviewsActivity.class);
+        Intent intent = new Intent(context, FeedbackScreenActivity.class);
         intent.putExtra(Constants.PLACE_ID, placeId);
         intent.putExtra(Constants.PLACE_NAME, placeName);
         context.startActivity(intent);

@@ -2,6 +2,7 @@ package com.example.user.vandrova;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationProvider;
@@ -153,9 +154,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                FeedbackBottomSheetDialog dialog = new FeedbackBottomSheetDialog();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Constants.LAT_LNG, latLng);
+                dialog.setArguments(bundle);
+                dialog.show(getSupportFragmentManager(), FeedbackBottomSheetDialog.class.getSimpleName());
+            }
+        });
         LatLng sydney = new LatLng(-34, 151);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
+
 
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
