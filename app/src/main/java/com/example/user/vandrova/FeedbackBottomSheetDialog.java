@@ -15,7 +15,10 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
+        final String placeId = getArguments().getString(Constants.PLACE_ID);
+        final String placeName = getArguments().getString(Constants.PLACE_NAME);
+
         View v = inflater.inflate(R.layout.bottom_sheet_layout, container, false);
 
         Button leaveFeedback;
@@ -25,6 +28,7 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
         leaveFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FeedbackScreenActivity.show(container.getContext(), placeId, placeName);
                 sheetListener.onButtonClicked(1);
                 dismiss();
             }
@@ -33,6 +37,7 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
         viewFeedbacks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ReviewsActivity.show(container.getContext(), placeId, placeName);
                 sheetListener.onButtonClicked(2);
                 dismiss();
             }

@@ -1,5 +1,6 @@
 package com.example.user.vandrova;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,14 +22,21 @@ public class FeedbackScreenActivity extends AppCompatActivity {
     EditText feedbackEditText, emailEditText, nameEditText;
     RatingBar rating;
 
+    public static void show(Context context, String placeId, String placeName) {
+        Intent intent = new Intent(context, ReviewsActivity.class);
+        intent.putExtra(Constants.PLACE_ID, placeId);
+        intent.putExtra(Constants.PLACE_NAME, placeName);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback_screen);
 
         Intent intent = getIntent();
-        final String placeId = intent.getStringExtra("place_id");
-        final String placeName = intent.getStringExtra("place_name");
+        final String placeId = intent.getStringExtra(Constants.PLACE_ID);
+        final String placeName = intent.getStringExtra(Constants.PLACE_NAME);
 
         rating = findViewById(R.id.ratingBar);
         placeNameTextView = findViewById(R.id.placeNameTextView);
