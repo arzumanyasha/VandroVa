@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.example.user.vandrova.dao.AppDatabase;
+import com.example.user.vandrova.model.Review;
+
 public class FeedbackScreenActivity extends AppCompatActivity {
 
     Button sendFeedbackButton;
@@ -24,6 +27,8 @@ public class FeedbackScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feedback_screen);
 
         Intent intent = getIntent();
+        final String placeId = intent.getStringExtra("place_id");
+        final String placeName = intent.getStringExtra("place_name");
 
         rating = findViewById(R.id.ratingBar);
         placeNameTextView = findViewById(R.id.placeNameTextView);
@@ -36,6 +41,8 @@ public class FeedbackScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(feedbackEditText.getText()!=null && emailEditText.getText()!=null && nameEditText.getText()!=null && rating.getRating()!=0.0){
+                    Review review = new Review(placeId, emailEditText.getText().toString(), nameEditText.getText().toString(), feedbackEditText.getText().toString(), rating.getNumStars());
+                    AppDatabase.getAppDatabase(FeedbackScreenActivity.this).reviewDao().insertAll(review);
                     Intent newIntent = new Intent(FeedbackScreenActivity.this, MainActivity.class);
                     startActivity(newIntent);
                 }
