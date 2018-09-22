@@ -87,7 +87,7 @@ public class FeedbackBottomSheetDialog extends BottomSheetDialogFragment {
     }
 
     private void setTVName(String placeName) {
-        placeTextView.setText("You near " + placeName);
+        placeTextView.setText("You are near " + placeName);
     }
 
 
