@@ -31,7 +31,7 @@ public interface ReviewDao {
     Integer getSumRatingByPlaceId(String placeId);
 
     @Query("SELECT SUM(RATING)/COUNT(RATING) FROM REVIEWS WHERE placeId = :placeId")
-    Double getRatingByPlaceId(String placeId);
+    Float getRatingByPlaceId(String placeId);
 
     @Insert
     void insertAll(Review... reviews);
