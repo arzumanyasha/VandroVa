@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -9,17 +10,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="You near "
-        android:textSize="25sp"/>
+        android:textSize="25sp"
+        android:textStyle="bold|italic"
+        app:fontFamily="serif" />
 
     <Button
         android:id="@+id/feedbackBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="LEAVE FEEDBACK"/>
+        android:text="LEAVE FEEDBACK" />
 
     <Button
         android:id="@+id/ratingListBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="VIEW FEEDBACKS"/>
+        android:text="VIEW FEEDBACKS" />
 </LinearLayout>
